@@ -35,7 +35,6 @@ namespace MobileApp.Droid
 
             if (DeviceInstallationService.NotificationsSupported)
             {
-                //irebaseMessaging.Instance.GetToken();
 
                 FirebaseInstanceId.GetInstance(Firebase.FirebaseApp.Instance)
                 .GetInstanceId()

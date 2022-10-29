@@ -33,7 +33,7 @@ namespace MobileApp
 
         private void ShowActionAlert(PushDemoAction action)
             => MainThread.BeginInvokeOnMainThread(()
-                => MainPage?.DisplayAlert("PushDemo", $"{action} action received", "OK")
+                => MainPage?.DisplayAlert("Nowa wiadomość", $"{action} action received", "OK")
                     .ContinueWith((task) => { if (task.IsFaulted) throw task.Exception; }));
     }
 }

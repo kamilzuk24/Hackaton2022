@@ -38,8 +38,7 @@ namespace MobileApp.Droid.Services
 
         public override void OnMessageReceived(RemoteMessage message)
         {
-            if (message.Data.TryGetValue("action", out var messageAction))
-                NotificationActionService.TriggerAction(messageAction);
+            NotificationActionService.TriggerAction(message.Data);
         }
     }
 }

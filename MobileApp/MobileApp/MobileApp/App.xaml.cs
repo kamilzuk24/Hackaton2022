@@ -1,5 +1,8 @@
-﻿using MobileApp.Models;
+﻿using System.Collections.Generic;
+using MobileApp.Models;
 using MobileApp.Services;
+using MobileApp.ViewModels;
+using MobileApp.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -29,11 +32,12 @@ namespace MobileApp
         {
         }
 
-        private void NotificationActionTriggered(object sender, PushDemoAction e) => ShowActionAlert(e);
+        private void NotificationActionTriggered(object sender, (PushAction action, IDictionary<string, string> data) a) => ShowActionAlert(a);
 
-        private void ShowActionAlert(PushDemoAction action)
-            => MainThread.BeginInvokeOnMainThread(()
-                => MainPage?.DisplayAlert("Nowa wiadomość", $"{action} action received", "OK")
-                    .ContinueWith((task) => { if (task.IsFaulted) throw task.Exception; }));
+        private void ShowActionAlert((PushAction action, IDictionary<string, string> data) a)
+            => MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.GoToAsync($"{nameof(NewTransaction)}?{nameof(NewTransactionViewModel.Id)}={a.action}");
+            });
     }
 }

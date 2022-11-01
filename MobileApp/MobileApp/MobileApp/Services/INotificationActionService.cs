@@ -1,7 +1,9 @@
-﻿namespace MobileApp.Services
+﻿using System.Collections.Generic;
+
+namespace MobileApp.Services
 {
     public interface INotificationActionService
     {
-        void TriggerAction(string action);
+        void TriggerAction(IDictionary<string, string> data);
     }
 }

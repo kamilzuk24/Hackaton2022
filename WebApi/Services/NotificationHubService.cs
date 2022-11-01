@@ -91,17 +91,8 @@ namespace WebApi.Services
                 PushTemplates.Silent.Android :
                 PushTemplates.Generic.Android;
 
-            var iOSPushTemplate = notificationRequest.Silent ?
-                PushTemplates.Silent.iOS :
-                PushTemplates.Generic.iOS;
-
             var androidPayload = PrepareNotificationPayload(
                 androidPushTemplate,
-                notificationRequest.Text,
-                notificationRequest.Action);
-
-            var iOSPayload = PrepareNotificationPayload(
-                iOSPushTemplate,
                 notificationRequest.Text,
                 notificationRequest.Action);
 
@@ -137,7 +128,8 @@ namespace WebApi.Services
 
         private string PrepareNotificationPayload(string template, string text, string action) => template
             .Replace("$(alertMessage)", text, StringComparison.InvariantCulture)
-            .Replace("$(alertAction)", action, StringComparison.InvariantCulture);
+            .Replace("$(alertAction)", action, StringComparison.InvariantCulture)
+            .Replace("$(id)", "123", StringComparison.InvariantCulture);
 
         private async Task SendPlatformNotificationsAsync(string androidPayload, CancellationToken token)
         {

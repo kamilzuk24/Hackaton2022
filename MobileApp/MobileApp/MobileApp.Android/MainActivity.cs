@@ -35,7 +35,6 @@ namespace MobileApp.Droid
 
             if (DeviceInstallationService.NotificationsSupported)
             {
-
                 FirebaseInstanceId.GetInstance(Firebase.FirebaseApp.Instance)
                 .GetInstanceId()
                 .AddOnSuccessListener(this);
@@ -67,8 +66,8 @@ namespace MobileApp.Droid
                 {
                     var action = intent.GetStringExtra("action");
 
-                    if (!string.IsNullOrEmpty(action))
-                        NotificationActionService.TriggerAction(action);
+                    //if (!string.IsNullOrEmpty(action))
+                    // NotificationActionService.TriggerAction(action);
                 }
             }
             catch (Exception ex)

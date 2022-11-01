@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using MobileApp.Models;
 
 namespace MobileApp.Services
 {
     public interface IPushDemoNotificationActionService : INotificationActionService
     {
-        event EventHandler<PushDemoAction> ActionTriggered;
+        event EventHandler<(PushAction action, IDictionary<string, string> data)> ActionTriggered;
     }
 }

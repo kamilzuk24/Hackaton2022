@@ -1,6 +1,8 @@
 ﻿namespace WebApi.Controllers
 {
+    using System;
     using System.ComponentModel.DataAnnotations;
+    using System.Linq;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
@@ -13,16 +15,39 @@
     public class NotificationsController : ControllerBase
     {
         private readonly INotificationService _notificationService;
+        private readonly IMailRepository _mailRepository;
 
-        public NotificationsController(INotificationService notificationService)
+        public NotificationsController(INotificationService notificationService,
+            IMailRepository mailRepository)
         {
             _notificationService = notificationService;
+            _mailRepository = mailRepository;
         }
 
         [HttpGet]
         [Route("test")]
         public async Task<IActionResult> Test()
         {
+            var credentials = new MailCredentials()
+            {
+                MailServer = "poczta.o2.pl",
+                Login = "kamilzuk24@o2.pl",
+                Password = "12",
+                Port = 993,
+                SSL = true
+            };
+
+            try
+            {
+                var messages = _mailRepository.GetAllMails(credentials);
+
+                Console.WriteLine(messages.Count());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
             return new OkResult();
         }
 

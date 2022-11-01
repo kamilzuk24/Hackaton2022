@@ -7,18 +7,25 @@ namespace MobileApp.Services
 {
     public class PushDemoNotificationActionService : IPushDemoNotificationActionService
     {
-        private readonly Dictionary<string, PushDemoAction> _actionMappings = new Dictionary<string, PushDemoAction>
+        private readonly Dictionary<string, PushAction> _actionMappings = new Dictionary<string, PushAction>
         {
-            { "action_a", PushDemoAction.ActionA },
-            { "action_b", PushDemoAction.ActionB }
+            { "NewTransaction", PushAction.NewTransaction },
+            { "RememberToPay", PushAction.RememberToPay }
         };
 
-        public event EventHandler<PushDemoAction> ActionTriggered = delegate { };
+        public event EventHandler<(PushAction action, IDictionary<string, string> data)> ActionTriggered = delegate { };
 
-        public void TriggerAction(string action)
+        public void TriggerAction(IDictionary<string, string> data)
         {
-            if (!_actionMappings.TryGetValue(action, out var pushDemoAction))
+            if (!data.TryGetValue("action", out var messageAction))
+            {
                 return;
+            }
+
+            if (!_actionMappings.TryGetValue(messageAction, out var pushAction))
+            {
+                return;
+            }
 
             List<Exception> exceptions = new List<Exception>();
 
@@ -26,7 +33,7 @@ namespace MobileApp.Services
             {
                 try
                 {
-                    handler.DynamicInvoke(this, pushDemoAction);
+                    handler.DynamicInvoke(this, (pushAction, data));
                 }
                 catch (Exception ex)
                 {

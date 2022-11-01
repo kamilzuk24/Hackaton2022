@@ -4,7 +4,7 @@
     {
         public class Generic
         {
-            public const string Android = "{ \"notification\": { \"title\" : \"Masz nowy rachunek do zapłaty!!!\", \"body\" : \"$(alertMessage)\"}, \"data\" : { \"action\" : \"$(alertAction)\" } }";
+            public const string Android = "{ \"notification\": { \"title\" : \"Masz nowy rachunek do zapłaty!!!\", \"body\" : \"$(alertMessage)\"}, \"data\" : { \"action\" : \"$(alertAction)\", \"id\" : \"$(id)\"  } }";
             public const string iOS = "{ \"aps\" : {\"alert\" : \"$(alertMessage)\"}, \"action\" : \"$(alertAction)\" }";
         }
 

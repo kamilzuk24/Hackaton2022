@@ -1,7 +1,4 @@
-﻿using MobileApp.ViewModels;
-using MobileApp.Views;
-using System;
-using System.Collections.Generic;
+﻿using MobileApp.Views;
 using Xamarin.Forms;
 
 namespace MobileApp
@@ -13,7 +10,8 @@ namespace MobileApp
             InitializeComponent();
             Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
             Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));
+            Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
+            Routing.RegisterRoute(nameof(NewTransaction), typeof(NewTransaction));
         }
-
     }
 }

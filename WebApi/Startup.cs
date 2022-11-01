@@ -23,6 +23,7 @@ namespace WebApi
             services.AddControllers();
 
             services.AddSingleton<INotificationService, NotificationHubService>();
+            services.AddScoped<IMailRepository, MailRepository>();
 
             services.AddOptions<NotificationHubOptions>()
                 .Configure(Configuration.GetSection("NotificationHub").Bind)

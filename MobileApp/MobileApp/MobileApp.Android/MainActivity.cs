@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -66,8 +67,13 @@ namespace MobileApp.Droid
                 {
                     var action = intent.GetStringExtra("action");
 
-                    //if (!string.IsNullOrEmpty(action))
-                    // NotificationActionService.TriggerAction(action);
+                    if (!string.IsNullOrEmpty(action))
+                    {
+                        NotificationActionService.TriggerAction(new Dictionary<string, string>()
+                        {
+                            { "action", action }, { "id", intent.HasExtra("id") ? intent.GetStringExtra("id") : "" }
+                        });
+                    }
                 }
             }
             catch (Exception ex)

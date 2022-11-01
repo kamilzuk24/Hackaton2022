@@ -13,18 +13,32 @@ namespace MobileApp.Services
             { "RememberToPay", PushAction.RememberToPay }
         };
 
-        public event EventHandler<(PushAction action, IDictionary<string, string> data)> ActionTriggered = delegate { };
+        public event EventHandler<(PushAction action, string id)> ActionTriggered = delegate { };
 
         public void TriggerAction(IDictionary<string, string> data)
         {
-            if (!data.TryGetValue("action", out var messageAction))
+            if (!data.TryGetValue("action", out var action))
             {
                 return;
             }
 
-            if (!_actionMappings.TryGetValue(messageAction, out var pushAction))
+            if (!_actionMappings.TryGetValue(action, out var pushAction))
             {
                 return;
+            }
+
+            string additionalData = "";
+            switch (pushAction)
+            {
+                case PushAction.NewTransaction:
+                    if (data.TryGetValue("id", out var id))
+                    {
+                        additionalData = id;
+                    }
+                    break;
+
+                default:
+                    break;
             }
 
             List<Exception> exceptions = new List<Exception>();
@@ -33,7 +47,7 @@ namespace MobileApp.Services
             {
                 try
                 {
-                    handler.DynamicInvoke(this, (pushAction, data));
+                    handler.DynamicInvoke(this, (pushAction, additionalData));
                 }
                 catch (Exception ex)
                 {

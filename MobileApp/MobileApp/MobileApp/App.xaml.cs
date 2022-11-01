@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MobileApp.Models;
+﻿using MobileApp.Models;
 using MobileApp.Services;
 using MobileApp.ViewModels;
 using MobileApp.Views;
@@ -32,12 +31,20 @@ namespace MobileApp
         {
         }
 
-        private void NotificationActionTriggered(object sender, (PushAction action, IDictionary<string, string> data) a) => ShowActionAlert(a);
+        private void NotificationActionTriggered(object sender, (PushAction action, string id) data) => ShowActionAlert(data);
 
-        private void ShowActionAlert((PushAction action, IDictionary<string, string> data) a)
+        private void ShowActionAlert((PushAction action, string id) data)
             => MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await Shell.Current.GoToAsync($"{nameof(NewTransaction)}?{nameof(NewTransactionViewModel.Id)}={a.action}");
+                switch (data.action)
+                {
+                    case PushAction.NewTransaction:
+                        await Shell.Current.GoToAsync($"{nameof(NewTransaction)}?{nameof(NewTransactionViewModel.Id)}={data.id}");
+                        break;
+
+                    default:
+                        break;
+                }
             });
     }
 }

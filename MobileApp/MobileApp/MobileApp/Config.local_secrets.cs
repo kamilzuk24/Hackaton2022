@@ -5,7 +5,7 @@
         static Config()
         {
             ApiKey = "<your_api_key>";
-            BackendServiceEndpoint = "https://webapiforapp.azurewebsites.net/";
+            BackendServiceEndpoint = "https://webapi20221104145749.azurewebsites.net/";
         }
     }
 }

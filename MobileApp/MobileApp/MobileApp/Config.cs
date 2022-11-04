@@ -3,6 +3,6 @@
     public static partial class Config
     {
         public static string ApiKey = "API_KEY";
-        public static string BackendServiceEndpoint = "https://webapiforapp.azurewebsites.net/";
+        public static string BackendServiceEndpoint = "https://webapi20221104145749.azurewebsites.net/";
     }
 }

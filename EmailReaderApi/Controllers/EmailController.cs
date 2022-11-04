@@ -40,4 +40,22 @@ public class EmailController : ControllerBase
         return Ok(emails);
     }
     
+    [HttpGet("attachment/{messageId}/{fileId}/{name}")]
+    [GoogleScopedAuthorize(GmailService.ScopeConstants.MailGoogleCom)]
+    public async Task<IActionResult> GetAttachment(
+        [FromServices] IGoogleAuthProvider auth,
+        [FromRoute] string messageId,
+        [FromRoute] string fileId,
+        [FromRoute] string name
+        )
+    {
+        var cred = await auth.GetCredentialAsync();
+        var attachment = await _emailService.GetAttachment(cred, messageId, fileId);
+        
+        return new FileContentResult(attachment, "application/pdf")
+        {
+            FileDownloadName = name
+        };
+
+    }
 }

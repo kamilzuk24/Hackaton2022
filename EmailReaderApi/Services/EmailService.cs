@@ -1,13 +1,16 @@
+using System.Net.Mail;
 using EmailReaderApi.Helpers;
 using EmailReaderApi.Models;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
+using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
 
 namespace EmailReaderApi.Services;
 
 public class EmailService : IEmailService
 {
+    private readonly string FILE_ENDPOINT = "https://localhost:7215/attachment";
     public async Task<IEnumerable<Email>> GetUnreadEmails(GoogleCredential cred)
     {
         var gmailService = new GmailService(new BaseClientService.Initializer()
@@ -50,13 +53,33 @@ public class EmailService : IEmailService
                     mail.Body = Decoders.DecodeURLEncodedBase64EncodedString(emailRes.Payload.Body.Data);
                 else
                     mail.Body = Decoders.GetNestedBodyParts(emailRes.Payload.Parts, "");
-
-                emails.Add(mail);
             }
+
+            if (emailRes.Payload.Parts == null) continue;
+            foreach (var part in emailRes.Payload.Parts)
+            {
+                if(string.IsNullOrEmpty(part.Filename)) continue;
+                
+                var attachId = part.Body.AttachmentId;
+                mail.Attachments.Add(new EmailAttachment(part.Filename, $"{FILE_ENDPOINT}/{emailRes.Id}/{attachId}/{part.Filename}"));
+            }
+            
+            emails.Add(mail);
         }
 
         return emails;
     }
-    
-    
+
+    public async Task<byte[]> GetAttachment(GoogleCredential cred, string messageId, string fileId)
+    {
+        var gmailService = new GmailService(new BaseClientService.Initializer()
+        {
+            HttpClientInitializer = cred
+        });
+        
+        var attachPart = await gmailService.Users.Messages.Attachments.Get("me",messageId,fileId).ExecuteAsync();
+                
+        byte[] data = Decoders.GetBytesFromPart(attachPart.Data);
+        return data;
+    }
 }

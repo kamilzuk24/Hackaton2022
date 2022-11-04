@@ -10,6 +10,7 @@ namespace WebApi.Database.Models
         public string Name { get; set; }
 
         public List<Bill> Bills { get; set; }
+
         public List<Recipient> Recipients { get; set; }
     }
 }

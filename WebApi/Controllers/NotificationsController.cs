@@ -28,25 +28,25 @@
         [Route("test")]
         public async Task<IActionResult> Test()
         {
-            var credentials = new MailCredentials()
-            {
-                MailServer = "poczta.o2.pl",
-                Login = "kamilzuk24@o2.pl",
-                Password = "12",
-                Port = 993,
-                SSL = true
-            };
+            //var credentials = new MailCredentials()
+            //{
+            //    MailServer = "poczta.o2.pl",
+            //    Login = "kamilzuk24@o2.pl",
+            //    Password = "12",
+            //    Port = 993,
+            //    SSL = true
+            //};
 
-            try
-            {
-                var messages = _mailRepository.GetAllMails(credentials);
+            //try
+            //{
+            //    var messages = _mailRepository.GetAllMails(credentials);
 
-                Console.WriteLine(messages.Count());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            //    Console.WriteLine(messages.Count());
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.Message);
+            //}
 
             return new OkResult();
         }

@@ -13,9 +13,9 @@ namespace WebApi.Controllers
         [Route("test")]
         public async Task<IActionResult> Index()
         {
-            await MailScannerClass.ScanAttachment("");
+            var result = await MailScannerClass.ScanAttachment();
 
-            return new OkResult();
+            return new JsonResult(result);
         }
     }
 }

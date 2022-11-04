@@ -1,4 +1,5 @@
 ﻿using MobileApp.Models;
+using MobileApp.Services;
 using MobileApp.Views;
 using System;
 using System.Collections.ObjectModel;
@@ -10,32 +11,32 @@ namespace MobileApp.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        private Item _selectedItem;
+        private Bill _selectedItem;
 
-        public ObservableCollection<Item> Items { get; }
+        public ObservableCollection<Bill> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
-        public Command<Item> ItemTapped { get; }
+        public Command<Bill> ItemTapped { get; }
 
-        public ItemsViewModel()
+        public ItemsViewModel(Guid userId, IBillsService billsService)
         {
             Title = "Browse";
-            Items = new ObservableCollection<Item>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            Items = new ObservableCollection<Bill>();
+            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand(userId, billsService));
 
-            ItemTapped = new Command<Item>(OnItemSelected);
+            ItemTapped = new Command<Bill>(OnItemSelected);
 
             AddItemCommand = new Command(OnAddItem);
         }
 
-        async Task ExecuteLoadItemsCommand()
+        private async Task ExecuteLoadItemsCommand(Guid userId, IBillsService billsService)
         {
             IsBusy = true;
 
             try
             {
                 Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
+                var items = await billsService.GetPayedBills(userId);
                 foreach (var item in items)
                 {
                     Items.Add(item);
@@ -57,7 +58,7 @@ namespace MobileApp.ViewModels
             SelectedItem = null;
         }
 
-        public Item SelectedItem
+        public Bill SelectedItem
         {
             get => _selectedItem;
             set
@@ -72,7 +73,7 @@ namespace MobileApp.ViewModels
             await Shell.Current.GoToAsync(nameof(NewItemPage));
         }
 
-        async void OnItemSelected(Item item)
+        private async void OnItemSelected(Bill item)
         {
             if (item == null)
                 return;

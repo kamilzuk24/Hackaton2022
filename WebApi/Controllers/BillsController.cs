@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         [Route("payed-bills/{userId}")]
         public List<Bill> GetHistory(Guid userId)
         {
-            return this.database.Bills.Where(x => x.UserId == userId && x.Payed).ToList();
+            return this.database.Bills.Where(x => x.UserId == userId).OrderBy(x => x.Payed).ToList();
         }
 
         [HttpGet]

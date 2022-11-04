@@ -9,8 +9,13 @@
                 HorizontalOptions="CenterAndExpand" />
 
             <StackLayout Spacing="20" Padding="15">
-                <Label Text="Rachunek:" FontSize="Medium" />
-                <Label Text="{Binding Id}" FontSize="Small" />
+                <Label Text="Text:" FontSize="Medium" />
+                <Label Text="{Binding Text}" FontSize="Small" />
+                <Label Text="Description:" FontSize="Medium" />
+                <Label Text="{Binding Description}" FontSize="Small" />
+
+                <Button Text="Wróć" Command="{Binding CancelCommand}"></Button>
+                <Button Text="Zapłać" IsVisible="{Binding NotPayed}" Command="{Binding PayCommand}"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

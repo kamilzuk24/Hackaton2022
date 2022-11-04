@@ -12,6 +12,9 @@ namespace MobileApp
             ServiceContainer.Register<IPushDemoNotificationActionService>(()
                 => new PushDemoNotificationActionService());
 
+            ServiceContainer.Register<IBillsService>(()
+                => new BillsService(Config.BackendServiceEndpoint));
+
             ServiceContainer.Register<INotificationRegistrationService>(()
                 => new NotificationRegistrationService(
                     Config.BackendServiceEndpoint,

@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApi", "WebApi", "{7E5D59
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{592E6658-4359-452C-9DC3-1BA2A0E9DD69}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmailReader", "EmailReader", "{75EEC235-220B-496F-B51F-7A6945C48502}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailReaderApi", "EmailReaderApi\EmailReaderApi.csproj", "{9655E498-9E87-4404-B657-0C94BBE76726}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,18 @@ Global
 		{592E6658-4359-452C-9DC3-1BA2A0E9DD69}.Release|iPhone.Build.0 = Release|Any CPU
 		{592E6658-4359-452C-9DC3-1BA2A0E9DD69}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{592E6658-4359-452C-9DC3-1BA2A0E9DD69}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Release|iPhone.Build.0 = Release|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{9655E498-9E87-4404-B657-0C94BBE76726}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +104,7 @@ Global
 		{3774E493-DB27-46AB-9E8B-806A7C209DD9} = {08A825E8-EB91-439E-881B-1BD65DC1EA56}
 		{00ABDE2E-F8AC-43ED-AA5F-46E833826C65} = {08A825E8-EB91-439E-881B-1BD65DC1EA56}
 		{592E6658-4359-452C-9DC3-1BA2A0E9DD69} = {7E5D59C9-8B74-425B-8DAE-0A8F3E4C9EBA}
+		{9655E498-9E87-4404-B657-0C94BBE76726} = {75EEC235-220B-496F-B51F-7A6945C48502}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A869361D-B4E8-44A4-B747-8C6546834788}

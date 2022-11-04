@@ -5,6 +5,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
+using MimeTypes;
 
 namespace EmailReaderApi.Services;
 
@@ -70,7 +71,7 @@ public class EmailService : IEmailService
         return emails;
     }
 
-    public async Task<byte[]> GetAttachment(GoogleCredential cred, string messageId, string fileId)
+    public async Task<EmailAttachmentViewModel> GetAttachment(GoogleCredential cred, string messageId, string fileId, string name)
     {
         var gmailService = new GmailService(new BaseClientService.Initializer()
         {
@@ -78,8 +79,17 @@ public class EmailService : IEmailService
         });
         
         var attachPart = await gmailService.Users.Messages.Attachments.Get("me",messageId,fileId).ExecuteAsync();
-                
         byte[] data = Decoders.GetBytesFromPart(attachPart.Data);
-        return data;
+        var ext = Path.GetExtension(name);
+
+        var model = new EmailAttachmentViewModel()
+        {
+            Name = name,
+            Data = data,
+            Extension = ext,
+            MimeType = MimeTypeMap.GetMimeType(ext)
+        };
+        
+        return model;
     }
 }

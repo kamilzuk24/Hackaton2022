@@ -50,12 +50,11 @@ public class EmailController : ControllerBase
         )
     {
         var cred = await auth.GetCredentialAsync();
-        var attachment = await _emailService.GetAttachment(cred, messageId, fileId);
+        var attachment = await _emailService.GetAttachment(cred, messageId, fileId, name);
         
-        return new FileContentResult(attachment, "application/pdf")
+        return new FileContentResult(attachment.Data, attachment.MimeType)
         {
-            FileDownloadName = name
+            FileDownloadName = attachment.Name
         };
-
     }
 }

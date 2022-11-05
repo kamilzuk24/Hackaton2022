@@ -1,18 +1,6 @@
-using System.Text;
-using EmailReaderApi.Helpers;
-using EmailReaderApi.Models;
 using EmailReaderApi.Services;
-using Google.Apis.Auth.AspNetCore3;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Gmail.v1;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using Google.Apis.Auth.AspNetCore3;
-using Google.Apis.Auth.OAuth2;
-
-using Google.Apis.Gmail.v1.Data;
-using Google.Apis.Services;
 
 namespace EmailReaderApi.Controllers;
 

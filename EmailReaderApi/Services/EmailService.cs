@@ -11,7 +11,7 @@ namespace EmailReaderApi.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly string FILE_ENDPOINT = "https://localhost:7215/attachment";
+    private readonly string FILE_ENDPOINT = "https://emailreaderapi20221105085845.azurewebsites.net/attachment";
     public async Task<IEnumerable<Email>> GetUnreadEmails(GoogleCredential cred)
     {
         var gmailService = new GmailService(new BaseClientService.Initializer()

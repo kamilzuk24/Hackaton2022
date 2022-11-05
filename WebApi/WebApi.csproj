@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EmailReaderApi\EmailReaderApi.csproj" />
     <ProjectReference Include="..\MailScanner\MailScanner.csproj" />
   </ItemGroup>
 

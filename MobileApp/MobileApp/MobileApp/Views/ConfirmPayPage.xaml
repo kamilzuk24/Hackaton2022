@@ -9,7 +9,8 @@
                 VerticalOptions="Center"
                 HorizontalOptions="Center" />
 
-            <Button Text="Wróć do listy" Clicked="Button_Clicked" HorizontalOptions="EndAndExpand"></Button>
+            <Button Text="Wróć do listy" Clicked="Button_Clicked" 
+                    VerticalOptions="End" HorizontalOptions="CenterAndExpand"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

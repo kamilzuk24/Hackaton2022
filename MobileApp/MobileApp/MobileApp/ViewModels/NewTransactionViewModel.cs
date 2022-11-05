@@ -5,6 +5,7 @@ using MobileApp.Services;
 using Xamarin.Forms;
 using static System.Net.Mime.MediaTypeNames;
 using MobileApp.Views;
+using System.Globalization;
 
 namespace MobileApp.ViewModels
 {
@@ -32,8 +33,10 @@ namespace MobileApp.ViewModels
         private string account;
         private string title;
         private decimal amount;
+        private string amountFormatted;
         private string currency;
         private string statusOfPayment;
+        private string titleBand;
         public string PaymentDate => "05.11.2022";
 
         public string StatusOfPayment
@@ -42,8 +45,18 @@ namespace MobileApp.ViewModels
             set => SetProperty(ref statusOfPayment, value);
         }
 
-        public string TitleBand => NotPayed ? "Zapłać rachunek" : "Sczegóły rachunku";
-        public string AmmountFormatted => string.Format("{0:N2} {1}", this.Amount, this.Currency);
+        public string AmmountFormatted
+        {
+            get => amountFormatted;
+            set => SetProperty(ref amountFormatted, value);
+        }
+
+        public string TitleBand
+        {
+            get => titleBand;
+            set => SetProperty(ref titleBand, value);
+        }
+
         public string AccountFormatted => this.Account;
 
         public string Id
@@ -122,6 +135,8 @@ namespace MobileApp.ViewModels
                 Amount = item.Amount;
                 Currency = item.Currency;
                 StatusOfPayment = item.Payed ? "Zapłacono" : "Nie opłacone";
+                AmmountFormatted = string.Format(new CultureInfo("pl-PL"), "{0:N2} {1}", this.Amount, this.Currency);
+                TitleBand = !item.Payed ? "Zapłać rachunek" : "Sczegóły rachunku";
             }
             catch (Exception)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace MobileApp.Models
 {
@@ -11,7 +12,7 @@ namespace MobileApp.Models
         public decimal Amount { get; set; }
         public string Currency { get; set; }
         public string Title { get; set; }
-        public string AmmountFormatted => string.Format("{0:N2} {1}", this.Amount, this.Currency);
+        public string AmmountFormatted => string.Format(new CultureInfo("pl-PL"), "{0:N2} {1}", this.Amount, this.Currency);
         public string AccountFormatted => GetAccountNumberFormatted();
 
         public string Label => string.Format("{0} {1} {2}", this.Company, this.Email, this.AmmountFormatted);

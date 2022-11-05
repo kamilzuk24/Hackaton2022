@@ -76,7 +76,8 @@ public class AtPayRecurringJob : IAtPayRecurringJob
                     var ResultRecords = result.Bills.Select(q => new Database.Models.Bill()
                     {
                         Account = q.BillAccountNumber,
-                        Amount = (decimal.TryParse(q.CashAmount, out var res) ? res : 25),
+                        //decimal.TryParse("52,99", System.Globalization.NumberStyles.Currency, new System.Globalization.CultureInfo("pl-PL"),
+                        Amount = (decimal.TryParse(q.CashAmount, System.Globalization.NumberStyles.Currency, new System.Globalization.CultureInfo("pl-PL"), out var res) ? res : 25),
                         Currency = q.Currency,
                         Payed = false,
                         Title = q.PaymentName,

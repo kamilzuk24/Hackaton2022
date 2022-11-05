@@ -16,8 +16,6 @@ namespace MobileApp.Views
             billsService = ServiceContainer.Resolve<IBillsService>();
 
             this.BindingContext = new NewTransactionViewModel(billsService);
-
-            //this.buttons.IsVisible = true;
         }
     }
 }

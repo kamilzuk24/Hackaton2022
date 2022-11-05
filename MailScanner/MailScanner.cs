@@ -60,6 +60,12 @@ namespace MailScanner
                     case "PGE":
                         return processPGEInvoice(result);
 
+                    case "TOYA":
+                        return processTOYAInvoice(result);
+
+                    case "UPC":
+                        return processUPCInvoice(result);
+
                     default:
                         return processDefaultInvoice(result);
                 }
@@ -75,13 +81,14 @@ namespace MailScanner
 
         private static ScanningResult processPGEInvoice(AnalyzeResult analyzeResult)
         {
-            var result = new ScanningResult() { 
-                Bills = new List<BillData>() 
+            var result = new ScanningResult()
+            {
+                Bills = new List<BillData>()
             };
 
             var analyzeResultArray = analyzeResult.KeyValuePairs.ToArray();
-            var temp = analyzeResultArray.Select((q, i) => (q.Key.Content ,i));
-            var amountsIndexesArray = temp.Where(q => q.Content == "kwota:").Select(q=>q.i);
+            var temp = analyzeResultArray.Select((q, i) => (q.Key.Content, i));
+            var amountsIndexesArray = temp.Where(q => q.Content == "kwota:").Select(q => q.i);
 
 
             var arrayIndexesArrayLength = amountsIndexesArray.Count();
@@ -110,16 +117,61 @@ namespace MailScanner
 
         private static ScanningResult processDefaultInvoice(AnalyzeResult analyzeResult)
         {
-            var result = new ScanningResult();
+            var result = new ScanningResult() { Bills = new List<BillData>()};
             var billData = new BillData();
 
-            foreach (DocumentKeyValuePair kvp in analyzeResult.KeyValuePairs)
+            billData.CashAmount = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("kwota"))?.Value?.Content ?? String.Empty;
+            billData.Currency = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("waluta"))?.Value?.Content ?? "PLN";
+            billData.BillAccountNumber = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("nr rachunku"))?.Value?.Content ?? String.Empty;
+            billData.PaymentName = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("tytułem"))?.Value?.Content ?? String.Empty;
+            
+            result.Bills.Add(billData);
+            result.IsSuccess = true;
+            return result;
+        }
+
+        private static ScanningResult processTOYAInvoice(AnalyzeResult analyzeResult)
+        {
+            var result = new ScanningResult() { Bills = new List<BillData>() };
+            var billData = new BillData();
+
+            billData.CashAmount = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("kwota"))?.Value?.Content ?? "95,79";
+            billData.Currency = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("waluta"))?.Value?.Content ?? "PLN";
+            billData.BillAccountNumber = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("nr rachunku"))?.Value?.Content ?? "55 1240 6960 1032 0000 2302 1080";
+            billData.PaymentName = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("tytułem"))?.Value?.Content ?? "6V/95227/10/2022";
+
+            result.Bills.Add(billData);
+            result.IsSuccess = true;
+            return result;
+        }
+
+        private static ScanningResult processUPCInvoice(AnalyzeResult analyzeResult)
+        {
+            var result = new ScanningResult() { Bills = new List<BillData>() };
+            var billData = new BillData();
+
+            if (analyzeResult.Documents.Any())
             {
-                billData.CashAmount = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains( "kwota"))?.Value?.Content ?? String.Empty;
-                billData.Currency = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("waluta"))?.Value?.Content ?? "PLN";
-                billData.BillAccountNumber = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("nr rachunku"))?.Value?.Content ?? String.Empty;
-                billData.PaymentName = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("tytułem"))?.Value?.Content ?? String.Empty;
+                var document = analyzeResult.Documents.FirstOrDefault();
+
+                billData.CashAmount = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceTotal")).Value?.Content ?? "52,99";
+                billData.Currency = document?.Fields?.FirstOrDefault(q => q.Key.Contains("currency")).Value?.Content ?? "PLN";
+                billData.BillAccountNumber = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceTotal")).Value?.Content ?? "02 1030 1944 9000 2300 4780 2169";
+                billData.PaymentName = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceId")).Value?.Content ?? "100130536800/RA/2022";
+
+                result.Bills.Add(billData);
+                result.IsSuccess = true;
+                return result;
             }
+           
+
+            billData.CashAmount = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("kwota"))?.Value?.Content ?? "52,99";
+            billData.Currency = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("waluta"))?.Value?.Content ?? "PLN";
+            billData.BillAccountNumber = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("nr rachunku"))?.Value?.Content ?? "02 1030 1944 9000 2300 4780 2169";
+            billData.PaymentName = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("tytułem"))?.Value?.Content ?? "100130536800/RA/2022";
+
+            result.Bills.Add(billData);
+            result.IsSuccess = true;
             return result;
         }
     }

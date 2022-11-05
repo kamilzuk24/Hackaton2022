@@ -10,7 +10,7 @@ namespace MobileApp.Models
         public string Company { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; }
-
+        public string Title { get; set; }
         public string AmmountFormatted => string.Format("{0:N2} {1}", this.Amount, this.Currency);
         public string AccountFormatted => this.Account;
 

@@ -17,7 +17,7 @@ namespace MobileApp.Views
         private ItemsViewModel _viewModel;
 
         public ItemsPage()
-        {
+        {//ppll
             InitializeComponent();
 
             // BindingContext = _viewModel = new ItemsViewModel();

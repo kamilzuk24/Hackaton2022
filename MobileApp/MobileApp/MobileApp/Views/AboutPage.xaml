@@ -10,7 +10,8 @@
     <ContentPage.BindingContext>
         <vm:AboutViewModel />
     </ContentPage.BindingContext>
-
+    <StackLayout Padding="20">
+    <Image Source="newlogo120120.png" VerticalOptions="Start" HorizontalOptions="Center" />
     <RefreshView x:DataType="local:ItemsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
         <CollectionView x:Name="ItemsListView"
                 ItemsSource="{Binding Items}"
@@ -18,24 +19,33 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <StackLayout Padding="10" x:DataType="model:Bill">
-                        <Label Text="{Binding Label}"
-                            LineBreakMode="NoWrap"
-                            Style="{DynamicResource ListItemTextStyle}"
-                            FontSize="16" />
-                        <Label Text="{Binding AccountFormatted}"
-                            LineBreakMode="NoWrap"
-                            Style="{DynamicResource ListItemDetailTextStyle}"
-                            FontSize="13" />
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding Label}" LineBreakMode="NoWrap" Grid.Row="1" Grid.Column="0" FontSize="Medium" FontAttributes="Bold"
+                            Style="{DynamicResource ListItemTextStyle}" />
+                            <Label Text="{Binding AccountFormatted}" LineBreakMode="WordWrap"  Grid.Row="2" Grid.Column="0"
+                            Style="{DynamicResource ListItemDetailTextStyle}"  FontSize="13" />
+                            <Image IsVisible="{Binding Payed}" Source="ok.png" Grid.Row="1" Grid.Column="2" />
+
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
                                 NumberOfTapsRequired="1"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}}, Path=ItemTapped}"
                                 CommandParameter="{Binding .}">
-                            </TapGestureRecognizer>
-                        </StackLayout.GestureRecognizers>
+                                </TapGestureRecognizer>
+                            </Grid.GestureRecognizers>
+                        </Grid>
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </RefreshView>
+        </RefreshView>
+    </StackLayout>
 </ContentPage>

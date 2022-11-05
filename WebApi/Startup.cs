@@ -75,7 +75,7 @@ namespace WebApi
             });
 
             CreateDbIfNotExists(host);
-            RecurringJob.AddOrUpdate("ProcessUnreadEmails", () => recurringJob.ProcessUnreadEmails(), Cron.MinuteInterval(5));
+            RecurringJob.AddOrUpdate("ProcessUnreadEmails", () => recurringJob.ProcessUnreadEmails(), Cron.MinuteInterval(1));
         }
 
         private static void CreateDbIfNotExists(IHost host)

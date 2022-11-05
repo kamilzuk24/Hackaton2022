@@ -52,7 +52,8 @@ public class EmailService : IEmailService
 
         var emails = new List<Email>();
         var emailListResponse = await emailListRequest.ExecuteAsync();
-
+        if (emailListResponse.Messages == null) return emails;
+        
         foreach (var email in emailListResponse.Messages)
         {
             var emailReq = gmailService.Users.Messages.Get("me", email.Id);
@@ -90,6 +91,13 @@ public class EmailService : IEmailService
                 var attachId = part.Body.AttachmentId;
                 mail.Attachments.Add(new EmailAttachment(part.Filename, $"{SERVICE_URL}/attachment/{emailRes.Id}/{attachId}/{part.Filename}"));
             }
+            
+            var mods = new ModifyMessageRequest()
+            {
+                RemoveLabelIds = new List<string> { "UNREAD" }
+            };
+
+            await gmailService.Users.Messages.Modify(mods, "me", emailRes.Id).ExecuteAsync();
             
             emails.Add(mail);
         }

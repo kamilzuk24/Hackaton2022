@@ -1,4 +1,5 @@
 ﻿using MobileApp.Models;
+using MobileApp.Services;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -9,6 +10,13 @@ namespace MobileApp.ViewModels
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class ItemDetailViewModel : BaseViewModel
     {
+        private IBillsService billsService;
+
+        public ItemDetailViewModel(IBillsService billsService)
+        {
+            this.billsService = billsService;
+        }
+
         private string itemId;
         private string text;
         private string description;
@@ -43,10 +51,10 @@ namespace MobileApp.ViewModels
         {
             try
             {
-                var item = await DataStore.GetItemAsync(itemId);
-                Id = item.Id;
-                Text = item.Text;
-                Description = item.Description;
+                var item = await this.billsService.GetBill(new Guid(itemId));
+                Id = item.Id.ToString();
+                Text = item.Label;
+                Description = item.AccountFormatted;
             }
             catch (Exception)
             {

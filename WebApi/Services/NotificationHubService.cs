@@ -94,7 +94,8 @@ namespace WebApi.Services
             var androidPayload = PrepareNotificationPayload(
                 androidPushTemplate,
                 notificationRequest.Text,
-                notificationRequest.Action);
+                notificationRequest.Action,
+                notificationRequest.Id);
 
             try
             {
@@ -126,10 +127,10 @@ namespace WebApi.Services
             }
         }
 
-        private string PrepareNotificationPayload(string template, string text, string action) => template
+        private string PrepareNotificationPayload(string template, string text, string action, Guid? Id) => template
             .Replace("$(alertMessage)", text, StringComparison.InvariantCulture)
             .Replace("$(alertAction)", action, StringComparison.InvariantCulture)
-            .Replace("$(id)", "123", StringComparison.InvariantCulture);
+            .Replace("$(id)", Id?.ToString(), StringComparison.InvariantCulture);
 
         private async Task SendPlatformNotificationsAsync(string androidPayload, CancellationToken token)
         {

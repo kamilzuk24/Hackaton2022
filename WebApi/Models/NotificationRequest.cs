@@ -6,6 +6,7 @@ namespace WebApi.Models
     {
         public string Text { get; set; }
         public string Action { get; set; }
+        public Guid? Id { get; set; }
         public string[] Tags { get; set; } = Array.Empty<string>();
         public bool Silent { get; set; }
     }

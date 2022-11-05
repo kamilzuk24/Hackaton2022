@@ -14,15 +14,12 @@ namespace MailScanner
     public static class MailScannerClass
     {
         public static async Task<ScanningResult> ScanAttachment(
-            string fileName = @"100130536800.pdf",
+            string filePath,
             string companyName = "UPC")
         {
-            string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var pathToFile = Path.Combine(executableLocation, fileName);
-
             #region Validation
             //validation
-            if (string.IsNullOrEmpty(pathToFile))
+            if (string.IsNullOrEmpty(filePath))
             {
                 return new ScanningResult()
                 {
@@ -32,7 +29,7 @@ namespace MailScanner
                 };
             }
 
-            if (!File.Exists(pathToFile))
+            if (!File.Exists(filePath))
             {
                 return new ScanningResult()
                 {
@@ -52,7 +49,7 @@ namespace MailScanner
             AnalyzeResult result;
             try
             {
-                using (FileStream fsSource = File.OpenRead(pathToFile))
+                using (FileStream fsSource = File.OpenRead(filePath))
                 {
                     operation = await client.AnalyzeDocumentAsync(WaitUntil.Completed, "prebuilt-invoice", fsSource);
                     result = operation.Value;

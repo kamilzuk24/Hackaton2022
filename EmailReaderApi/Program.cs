@@ -1,3 +1,4 @@
+using EmailReaderApi.Middlewares;
 using EmailReaderApi.Services;
 using Google.Apis.Auth.AspNetCore3;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -29,7 +30,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-
+app.UseExceptionMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -5,19 +5,45 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Google.Apis.Services;
+using Google.Apis.Util.Store;
 using MimeTypes;
 
 namespace EmailReaderApi.Services;
 
 public class EmailService : IEmailService
 {
-    private readonly string FILE_ENDPOINT = "https://localhost:7215/attachment";
-    public async Task<IEnumerable<Email>> GetUnreadEmails(GoogleCredential cred)
+    private string SERVICE_URL;
+
+    public EmailService() { }
+
+    public EmailService(string serviceUrl)
     {
+        SERVICE_URL = serviceUrl;
+    }
+
+    private async Task<GmailService> GetService()
+    {
+        UserCredential credential;
+
+        await using var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read);
+        credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+            GoogleClientSecrets.FromStream(stream).Secrets,
+            new []{ GmailService.ScopeConstants.MailGoogleCom },
+            "user",
+            CancellationToken.None,
+            new FileDataStore("User.Token", true)).Result;
+
         var gmailService = new GmailService(new BaseClientService.Initializer()
         {
-            HttpClientInitializer = cred
+            HttpClientInitializer = credential
         });
+        
+        return gmailService;
+    }
+
+    public async Task<IEnumerable<Email>> GetUnreadEmails()
+    {
+        var gmailService = await GetService();
         
         var emailListRequest = gmailService.Users.Messages.List("me");
         emailListRequest.LabelIds = "INBOX";
@@ -62,7 +88,7 @@ public class EmailService : IEmailService
                 if(string.IsNullOrEmpty(part.Filename)) continue;
                 
                 var attachId = part.Body.AttachmentId;
-                mail.Attachments.Add(new EmailAttachment(part.Filename, $"{FILE_ENDPOINT}/{emailRes.Id}/{attachId}/{part.Filename}"));
+                mail.Attachments.Add(new EmailAttachment(part.Filename, $"{SERVICE_URL}/attachment/{emailRes.Id}/{attachId}/{part.Filename}"));
             }
             
             emails.Add(mail);
@@ -71,13 +97,9 @@ public class EmailService : IEmailService
         return emails;
     }
 
-    public async Task<EmailAttachmentViewModel> GetAttachment(GoogleCredential cred, string messageId, string fileId, string name)
+    public async Task<EmailAttachmentViewModel> GetAttachment(string messageId, string fileId, string name)
     {
-        var gmailService = new GmailService(new BaseClientService.Initializer()
-        {
-            HttpClientInitializer = cred
-        });
-        
+        var gmailService = await GetService();
         var attachPart = await gmailService.Users.Messages.Attachments.Get("me",messageId,fileId).ExecuteAsync();
         byte[] data = Decoders.GetBytesFromPart(attachPart.Data);
         var ext = Path.GetExtension(name);

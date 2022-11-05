@@ -31,24 +31,15 @@ public class EmailController : ControllerBase
         return Ok();
     }
     
-    [HttpGet("authorize")]
-    public IActionResult Authorize()
-    {
-        return Ok();
-    }
-    
     [HttpGet("emails")]
-    //[GoogleScopedAuthorize(GmailService.ScopeConstants.MailGoogleCom)]
     public async Task<IActionResult> Get()
     {
-        //var cred = await auth.GetCredentialAsync();
         var emails = await _emailService.GetUnreadEmails();
         return Ok(emails);
     }
     
     [HttpGet("attachment/{messageId}/{fileId}/{name}")]
     public async Task<IActionResult> GetAttachment(
-        [FromServices] IGoogleAuthProvider auth,
         [FromRoute] string messageId,
         [FromRoute] string fileId,
         [FromRoute] string name

@@ -100,7 +100,7 @@
                 return new BadRequestResult();
 
             var success = await _notificationService
-                .RequestNotificationAsync(notificationRequest, HttpContext.RequestAborted);
+                .RequestNotificationAsync(notificationRequest);
 
             if (!success)
                 return new UnprocessableEntityResult();

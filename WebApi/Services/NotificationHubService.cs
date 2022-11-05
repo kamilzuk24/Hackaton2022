@@ -78,7 +78,7 @@ namespace WebApi.Services
             return true;
         }
 
-        public async Task<bool> RequestNotificationAsync(NotificationRequest notificationRequest, CancellationToken token)
+        public async Task<bool> RequestNotificationAsync(NotificationRequest notificationRequest)
         {
             if ((notificationRequest.Silent &&
                 string.IsNullOrWhiteSpace(notificationRequest?.Action)) ||
@@ -102,18 +102,18 @@ namespace WebApi.Services
                 if (notificationRequest.Tags.Length == 0)
                 {
                     // This will broadcast to all users registered in the notification hub
-                    await SendPlatformNotificationsAsync(androidPayload, token);
+                    await SendPlatformNotificationsAsync(androidPayload);
                 }
                 else if (notificationRequest.Tags.Length <= 20)
                 {
-                    await SendPlatformNotificationsAsync(androidPayload, notificationRequest.Tags, token);
+                    await SendPlatformNotificationsAsync(androidPayload, notificationRequest.Tags);
                 }
                 else
                 {
                     var notificationTasks = notificationRequest.Tags
                         .Select((value, index) => (value, index))
                         .GroupBy(g => g.index / 20, i => i.value)
-                        .Select(tags => SendPlatformNotificationsAsync(androidPayload, tags, token));
+                        .Select(tags => SendPlatformNotificationsAsync(androidPayload, tags));
 
                     await Task.WhenAll(notificationTasks);
                 }
@@ -132,14 +132,14 @@ namespace WebApi.Services
             .Replace("$(alertAction)", action, StringComparison.InvariantCulture)
             .Replace("$(id)", Id?.ToString(), StringComparison.InvariantCulture);
 
-        private async Task SendPlatformNotificationsAsync(string androidPayload, CancellationToken token)
+        private async Task SendPlatformNotificationsAsync(string androidPayload)
         {
-            await _hub.SendFcmNativeNotificationAsync(androidPayload, token);
+            await _hub.SendFcmNativeNotificationAsync(androidPayload);
         }
 
-        private async Task SendPlatformNotificationsAsync(string androidPayload, IEnumerable<string> tags, CancellationToken token)
+        private async Task SendPlatformNotificationsAsync(string androidPayload, IEnumerable<string> tags)
         {
-            await _hub.SendFcmNativeNotificationAsync(androidPayload, tags, token);
+            await _hub.SendFcmNativeNotificationAsync(androidPayload, tags);
         }
     }
 }

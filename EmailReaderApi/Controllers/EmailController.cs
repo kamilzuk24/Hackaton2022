@@ -36,15 +36,8 @@ public class EmailController : ControllerBase
     [HttpGet("emails")]
     public async Task<IActionResult> Get()
     {
-        try
-        {
-            var emails = await _emailService.GetUnreadEmails();
-            return Ok(emails);
-        }
-        catch (Exception ex)
-        {
-            return Ok(ex.Message + " " + ex.StackTrace);
-        }
+        var emails = await _emailService.GetUnreadEmails();
+        return Ok(emails);
     }
 
     [HttpGet("attachment/{messageId}/{fileId}/{name}")]

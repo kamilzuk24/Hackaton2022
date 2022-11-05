@@ -29,7 +29,7 @@ public class EmailService : IEmailService
         credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
             GoogleClientSecrets.FromStream(stream).Secrets,
             new []{ GmailService.ScopeConstants.MailGoogleCom },
-            "user",
+            "user.json",
             CancellationToken.None,
             new FileDataStore("User.Token", true)).Result;
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WebApi.Database;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Models;
 
 namespace WebApi.Services;
 public class AtPayRecurringJob : IAtPayRecurringJob
@@ -25,7 +26,7 @@ public class AtPayRecurringJob : IAtPayRecurringJob
         response.EnsureSuccessStatusCode();
         string responseBody = await response.Content.ReadAsStringAsync();
 
-        var emails = JsonConvert.DeserializeObject<List<EmailReaderApi.Models.Email>>(responseBody);
+        var emails = JsonConvert.DeserializeObject<List<Email>>(responseBody);
 
         foreach (var mail in emails)
         {

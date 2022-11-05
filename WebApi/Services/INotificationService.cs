@@ -10,6 +10,6 @@ namespace WebApi.Services
 
         Task<bool> DeleteInstallationByIdAsync(string installationId, CancellationToken token);
 
-        Task<bool> RequestNotificationAsync(NotificationRequest notificationRequest, CancellationToken token);
+        Task<bool> RequestNotificationAsync(NotificationRequest notificationRequest);
     }
 }

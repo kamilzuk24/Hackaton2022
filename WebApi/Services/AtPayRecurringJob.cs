@@ -9,15 +9,18 @@ using System.Collections.Generic;
 using Models;
 
 namespace WebApi.Services;
+
 public class AtPayRecurringJob : IAtPayRecurringJob
 {
     private DatabaseContext _db { get; set; }
+    private readonly INotificationService _notificationService;
     private Guid testUserId = new Guid("1fa7367d-ba99-45be-9228-762c6230706b");
-    static readonly HttpClient client = new HttpClient();
+    private static readonly HttpClient client = new HttpClient();
 
-    public AtPayRecurringJob(DatabaseContext database)
+    public AtPayRecurringJob(DatabaseContext database, INotificationService notificationService)
     {
         _db = database;
+        _notificationService = notificationService;
     }
 
     public async Task ProcessUnreadEmails()
@@ -66,10 +69,20 @@ public class AtPayRecurringJob : IAtPayRecurringJob
                 }).ToList();
 
                 _db.Bills.AddRange(ResultRecords);
+
+                _db.SaveChanges();
+
+                foreach (var item in ResultRecords)
+                {
+                    await _notificationService.RequestNotificationAsync(new Models.NotificationRequest()
+                    {
+                        Action = "NewTransaction",
+                        Text = "Masz nową propozycje płatności",
+                        Id = item.Id
+                    });
+                }
             }
         }
-
-        _db.SaveChanges();
 
         Console.WriteLine("");
     }

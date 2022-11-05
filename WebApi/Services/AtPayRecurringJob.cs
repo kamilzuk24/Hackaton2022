@@ -7,6 +7,8 @@ using WebApi.Database;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Models;
+using System.IO;
+using System.Reflection;
 
 namespace WebApi.Services;
 
@@ -25,6 +27,9 @@ public class AtPayRecurringJob : IAtPayRecurringJob
 
     public async Task ProcessUnreadEmails()
     {
+        string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
+
         HttpResponseMessage response = await client.GetAsync("https://emailreaderapi20221105085845.azurewebsites.net/emails");
         response.EnsureSuccessStatusCode();
         string responseBody = await response.Content.ReadAsStringAsync();
@@ -52,34 +57,47 @@ public class AtPayRecurringJob : IAtPayRecurringJob
                 senderFromSubject = "Play";
             }
 
-            var result = await MailScannerClass.ScanAttachment(companyName: senderFromSubject);
-
-            if (result.IsSuccess)
+            foreach (var attachment in mail.Attachments)
             {
-                var ResultRecords = result.Bills.Select(q => new Database.Models.Bill()
+                var client = new System.Net.WebClient();
+                var responseBytes = client.DownloadData(
+                    attachment.Url);
+
+                var pathToFile = Path.Combine(executableLocation, attachment.Name);
+                System.IO.File.WriteAllBytes(pathToFile, responseBytes);
+
+                var result = await MailScannerClass.ScanAttachment(
+                    filePath: pathToFile, 
+                    companyName: senderFromSubject);
+                System.IO.File.Delete(pathToFile);
+
+                if (result.IsSuccess)
                 {
-                    Account = q.BillAccountNumber,
-                    Amount = (decimal.TryParse(q.CashAmount, out var res) ? res : 0),
-                    Currency = q.Currency,
-                    Payed = false,
-                    Title = q.PaymentName,
-                    Company = senderFromSubject,
-                    UserId = testUserId,
-                    Email = mail.From
-                }).ToList();
-
-                _db.Bills.AddRange(ResultRecords);
-
-                _db.SaveChanges();
-
-                foreach (var item in ResultRecords)
-                {
-                    await _notificationService.RequestNotificationAsync(new Models.NotificationRequest()
+                    var ResultRecords = result.Bills.Select(q => new Database.Models.Bill()
                     {
-                        Action = "NewTransaction",
-                        Text = "Masz nową propozycje płatności",
-                        Id = item.Id
-                    });
+                        Account = q.BillAccountNumber,
+                        Amount = (decimal.TryParse(q.CashAmount, out var res) ? res : 25),
+                        Currency = q.Currency,
+                        Payed = false,
+                        Title = q.PaymentName,
+                        Company = senderFromSubject,
+                        UserId = testUserId,
+                        Email = mail.From
+                    }).ToList();
+
+                    _db.Bills.AddRange(ResultRecords);
+
+                    _db.SaveChanges();
+
+                    foreach (var item in ResultRecords)
+                    {
+                        await _notificationService.RequestNotificationAsync(new Models.NotificationRequest()
+                        {
+                            Action = "NewTransaction",
+                            Text = "Masz nową propozycje płatności",
+                            Id = item.Id
+                        });
+                    }
                 }
             }
         }

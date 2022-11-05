@@ -156,7 +156,7 @@ namespace MailScanner
 
                 billData.CashAmount = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceTotal")).Value?.Content ?? "52,99";
                 billData.Currency = document?.Fields?.FirstOrDefault(q => q.Key.Contains("currency")).Value?.Content ?? "PLN";
-                billData.BillAccountNumber = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceTotal")).Value?.Content ?? "02 1030 1944 9000 2300 4780 2169";
+                billData.BillAccountNumber = document?.Fields?.FirstOrDefault(q => q.Key.Contains("PaymentAccount")).Value?.Content ?? "02 1030 1944 9000 2300 4780 2169";
                 billData.PaymentName = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceId")).Value?.Content ?? "100130536800/RA/2022";
 
                 result.Bills.Add(billData);

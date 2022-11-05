@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 using WebApi.Database;
 using WebApi.Models;
 using WebApi.Services;
+using Hangfire;
+using Hangfire.AspNetCore;
+using Hangfire.MemoryStorage;
 
 namespace WebApi
 {
@@ -28,6 +31,7 @@ namespace WebApi
 
             services.AddSingleton<INotificationService, NotificationHubService>();
             services.AddScoped<IMailRepository, MailRepository>();
+            services.AddScoped<IAtPayRecurringJob, AtPayRecurringJob>();
 
             services.AddOptions<NotificationHubOptions>()
                 .Configure(Configuration.GetSection("NotificationHub").Bind)
@@ -35,10 +39,23 @@ namespace WebApi
 
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddHangfire(configuration => configuration
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseMemoryStorage()
+            );
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHost host)
+        public void Configure(IApplicationBuilder app, 
+            IWebHostEnvironment env, 
+            IHost host,
+            IAtPayRecurringJob recurringJob)
         {
             if (env.IsDevelopment())
             {
@@ -54,9 +71,11 @@ namespace WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
 
             CreateDbIfNotExists(host);
+            RecurringJob.AddOrUpdate("ProcessUnreadEmails", () => recurringJob.ProcessUnreadEmails(), Cron.MinuteInterval(5));
         }
 
         private static void CreateDbIfNotExists(IHost host)

@@ -17,12 +17,12 @@ namespace WebApi.Database
             modelBuilder.Entity<User>().ToTable("Users");
 
             modelBuilder.Entity<User>()
-           .HasMany(p => p.Bills)
-           .WithOne(b => b.User);
+            .HasMany(p => p.Bills)
+            .WithOne(b => b.User);
 
             modelBuilder.Entity<User>()
-           .HasMany(p => p.Recipients)
-           .WithOne(b => b.User);
+            .HasMany(p => p.Recipients)
+            .WithOne(b => b.User);
         }
 
         public DbSet<Bill> Bills { get; set; }

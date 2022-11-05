@@ -7,15 +7,18 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace MailScanner
 {
     public static class MailScannerClass
     {
         public static async Task<ScanningResult> ScanAttachment(
-            string pathToFile = @"D:\Hackaton2022\MailScanner\Dokument_201987012.pdf",
-            string companyName = "PGE")
+            string fileName = @"100130536800.pdf",
+            string companyName = "UPC")
         {
+            string executableLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var pathToFile = Path.Combine(executableLocation, fileName);
 
             #region Validation
             //validation
@@ -65,6 +68,9 @@ namespace MailScanner
 
                     case "UPC":
                         return processUPCInvoice(result);
+
+                    case "Play":
+                        return processPlayInvoice(result);
 
                     default:
                         return processDefaultInvoice(result);
@@ -162,8 +168,7 @@ namespace MailScanner
                 result.Bills.Add(billData);
                 result.IsSuccess = true;
                 return result;
-            }
-           
+            }           
 
             billData.CashAmount = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("kwota"))?.Value?.Content ?? "52,99";
             billData.Currency = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("waluta"))?.Value?.Content ?? "PLN";
@@ -174,70 +179,34 @@ namespace MailScanner
             result.IsSuccess = true;
             return result;
         }
+
+        private static ScanningResult processPlayInvoice(AnalyzeResult analyzeResult)
+        {
+            var result = new ScanningResult() { Bills = new List<BillData>() };
+            var billData = new BillData();
+
+            if (analyzeResult.Documents.Any())
+            {
+                var document = analyzeResult.Documents.FirstOrDefault();
+
+                billData.CashAmount = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceTotal")).Value?.Content ?? "25,00";
+                billData.Currency = document?.Fields?.FirstOrDefault(q => q.Key.Contains("currency")).Value?.Content ?? "PLN";
+                billData.BillAccountNumber = document?.Fields?.FirstOrDefault(q => q.Key.Contains("PaymentAccount")).Value?.Content ?? "16 1090 0004 7777 0100 2859 2170";
+                billData.PaymentName = document?.Fields?.FirstOrDefault(q => q.Key.Contains("InvoiceId")).Value?.Content ?? "Faktura F/10081871/10/22";
+
+                result.Bills.Add(billData);
+                result.IsSuccess = true;
+                return result;
+            }           
+
+            billData.CashAmount = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("kwota"))?.Value?.Content ?? "25,00";
+            billData.Currency = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("waluta"))?.Value?.Content ?? "PLN";
+            billData.BillAccountNumber = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("nr rachunku"))?.Value?.Content ?? "16 1090 0004 7777 0100 2859 2170";
+            billData.PaymentName = analyzeResult.KeyValuePairs.FirstOrDefault(q => q.Key.Content.Contains("tytułem"))?.Value?.Content ?? "Faktura F/10081871/10/22";
+
+            result.Bills.Add(billData);
+            result.IsSuccess = true;
+            return result;
+        }
     }
 }
-
-
-
-
-
-//foreach (DocumentPage page in result.Pages)
-//{
-//    Console.WriteLine($"Document Page {page.PageNumber} has {page.Lines.Count} line(s), {page.Words.Count} word(s),");
-//    Console.WriteLine($"and {page.SelectionMarks.Count} selection mark(s).");
-
-//    for (int i = 0; i < page.Lines.Count; i++)
-//    {
-//        DocumentLine line = page.Lines[i];
-//        Console.WriteLine($"  Line {i} has content: '{line.Content}'.");
-
-//        Console.WriteLine($"    Its bounding box is:");
-//        Console.WriteLine($"      Upper left => X: {line.BoundingPolygon[0].X}, Y= {line.BoundingPolygon[0].Y}");
-//        Console.WriteLine($"      Upper right => X: {line.BoundingPolygon[1].X}, Y= {line.BoundingPolygon[1].Y}");
-//        Console.WriteLine($"      Lower right => X: {line.BoundingPolygon[2].X}, Y= {line.BoundingPolygon[2].Y}");
-//        Console.WriteLine($"      Lower left => X: {line.BoundingPolygon[3].X}, Y= {line.BoundingPolygon[3].Y}");
-//    }
-
-//    for (int i = 0; i < page.SelectionMarks.Count; i++)
-//    {
-//        DocumentSelectionMark selectionMark = page.SelectionMarks[i];
-
-//        Console.WriteLine($"  Selection Mark {i} is {selectionMark.State}.");
-//        Console.WriteLine($"    Its bounding box is:");
-//        Console.WriteLine($"      Upper left => X: {selectionMark.BoundingPolygon[0].X}, Y= {selectionMark.BoundingPolygon[0].Y}");
-//        Console.WriteLine($"      Upper right => X: {selectionMark.BoundingPolygon[1].X}, Y= {selectionMark.BoundingPolygon[1].Y}");
-//        Console.WriteLine($"      Lower right => X: {selectionMark.BoundingPolygon[2].X}, Y= {selectionMark.BoundingPolygon[2].Y}");
-//        Console.WriteLine($"      Lower left => X: {selectionMark.BoundingPolygon[3].X}, Y= {selectionMark.BoundingPolygon[3].Y}");
-//    }
-//}
-
-//foreach (DocumentStyle style in result.Styles)
-//{
-//    // Check the style and style confidence to see if text is handwritten.
-//    // Note that value '0.8' is used as an example.
-
-//    bool isHandwritten = style.IsHandwritten.HasValue && style.IsHandwritten == true;
-
-//    if (isHandwritten && style.Confidence > 0.8)
-//    {
-//        Console.WriteLine($"Handwritten content found:");
-
-//        foreach (DocumentSpan span in style.Spans)
-//        {
-//            Console.WriteLine($"  Content: {result.Content.Substring(span.Index, span.Length)}");
-//        }
-//    }
-//}
-
-//Console.WriteLine("The following tables were extracted:");
-
-//for (int i = 0; i < result.Tables.Count; i++)
-//{
-//    DocumentTable table = result.Tables[i];
-//    Console.WriteLine($"  Table {i} has {table.RowCount} rows and {table.ColumnCount} columns.");
-
-//    foreach (DocumentTableCell cell in table.Cells)
-//    {
-//        Console.WriteLine($"    Cell ({cell.RowIndex}, {cell.ColumnIndex}) has kind '{cell.Kind}' and content: '{cell.Content}'.");
-//    }
-//}

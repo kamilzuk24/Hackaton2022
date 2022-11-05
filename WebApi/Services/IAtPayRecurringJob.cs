@@ -1,7 +1,9 @@
-﻿namespace WebApi.Services
-{
+﻿using System.Threading.Tasks;
+
+namespace WebApi.Services;
+
     public interface IAtPayRecurringJob
     {
-        void ProcessUnreadEmails();
+        Task ProcessUnreadEmails();
     }
-}
+

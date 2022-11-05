@@ -33,9 +33,16 @@ namespace MobileApp.ViewModels
         private string title;
         private decimal amount;
         private string currency;
+        private string statusOfPayment;
         public string PaymentDate => "05.11.2022";
-        public string Status => notPayed ? "Nie opłacone" : "Zapłacono";
-        public string TitleBand => notPayed ? "Zapłać rachunek" : "Sczegóły rachunku";
+
+        public string StatusOfPayment
+        {
+            get => statusOfPayment;
+            set => SetProperty(ref statusOfPayment, value);
+        }
+
+        public string TitleBand => NotPayed ? "Zapłać rachunek" : "Sczegóły rachunku";
         public string AmmountFormatted => string.Format("{0:N2} {1}", this.Amount, this.Currency);
         public string AccountFormatted => this.Account;
 
@@ -113,6 +120,7 @@ namespace MobileApp.ViewModels
                 TitleFor = item.Title;
                 Amount = item.Amount;
                 Currency = item.Currency;
+                StatusOfPayment = item.Payed ? "Zapłacono" : "Nie opłacone";
             }
             catch (Exception)
             {
@@ -130,11 +138,6 @@ namespace MobileApp.ViewModels
 
         private async void OnPay()
         {
-            Item newItem = new Item()
-            {
-                Id = Guid.NewGuid().ToString()
-            };
-
             await this.billsService.PayBill(new Guid(this.Id));
 
             //await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");

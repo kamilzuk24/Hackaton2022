@@ -5,6 +5,6 @@ namespace EmailReaderApi.Services;
 
 public interface IEmailService
 {
-    public Task<IEnumerable<Email>> GetUnreadEmails(GoogleCredential cred);
-    public Task<EmailAttachmentViewModel> GetAttachment(GoogleCredential cred, string messageId, string fileId, string name);
+    public Task<IEnumerable<Email>> GetUnreadEmails();
+    public Task<EmailAttachmentViewModel> GetAttachment(string messageId, string fileId, string name);
 }

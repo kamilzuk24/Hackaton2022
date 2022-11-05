@@ -32,25 +32,20 @@ public class EmailController : ControllerBase
     }
     
     [HttpGet("emails")]
-    [GoogleScopedAuthorize(GmailService.ScopeConstants.MailGoogleCom)]
-    public async Task<IActionResult> Get([FromServices] IGoogleAuthProvider auth)
+    public async Task<IActionResult> Get()
     {
-        var cred = await auth.GetCredentialAsync();
-        var emails = await _emailService.GetUnreadEmails(cred);
+        var emails = await _emailService.GetUnreadEmails();
         return Ok(emails);
     }
     
     [HttpGet("attachment/{messageId}/{fileId}/{name}")]
-    [GoogleScopedAuthorize(GmailService.ScopeConstants.MailGoogleCom)]
     public async Task<IActionResult> GetAttachment(
-        [FromServices] IGoogleAuthProvider auth,
         [FromRoute] string messageId,
         [FromRoute] string fileId,
         [FromRoute] string name
         )
     {
-        var cred = await auth.GetCredentialAsync();
-        var attachment = await _emailService.GetAttachment(cred, messageId, fileId, name);
+        var attachment = await _emailService.GetAttachment(messageId, fileId, name);
         
         return new FileContentResult(attachment.Data, attachment.MimeType)
         {

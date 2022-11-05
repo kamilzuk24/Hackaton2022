@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
         builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 });
 
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailService, EmailService>(a => new EmailService(config.GetSection("ServiceURL").Value));
 
 var app = builder.Build();
 

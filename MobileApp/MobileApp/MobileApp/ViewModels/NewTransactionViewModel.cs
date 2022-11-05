@@ -112,6 +112,7 @@ namespace MobileApp.ViewModels
             try
             {
                 var item = await this.billsService.GetBill(new Guid(itemId));
+                item.Account = item.Account?.Trim()?.Replace(" ", "");
                 Id = item.Id.ToString();
                 NotPayed = !item.Payed;
                 Email = item.Email;

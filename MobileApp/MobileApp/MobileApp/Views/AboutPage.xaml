@@ -25,12 +25,12 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="230"/>
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <Label Text="{Binding Label}" LineBreakMode="NoWrap" Grid.Row="1" Grid.Column="0" FontSize="Medium" FontAttributes="Bold"
                             Style="{DynamicResource ListItemTextStyle}" />
-                            <Label Text="{Binding AccountFormatted}" LineBreakMode="WordWrap"  Grid.Row="2" Grid.Column="0"
+                                <Label Text="{Binding AccountFormatted}" LineBreakMode="NoWrap"  Grid.Row="2" Grid.Column="0"
                             Style="{DynamicResource ListItemDetailTextStyle}"  FontSize="13" />
                             <Image IsVisible="{Binding Payed}" Source="ok.png" Grid.Row="1" Grid.Column="2" />
 

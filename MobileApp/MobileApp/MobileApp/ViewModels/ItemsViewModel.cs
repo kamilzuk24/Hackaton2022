@@ -38,7 +38,8 @@ namespace MobileApp.ViewModels
                 Items.Clear();
                 var items = await billsService.GetPayedBills(userId);
                 foreach (var item in items)
-                {
+                { 
+                    item.Account = item.Account?.Trim()?.Replace(" ", "");
                     Items.Add(item);
                 }
             }

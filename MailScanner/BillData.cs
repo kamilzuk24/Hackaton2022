@@ -6,10 +6,12 @@ public class BillData
 
     public string BillAccountNumber { get; set; }
 
-    public double CashAmount { get; set; }
+    public string CashAmount { get; set; }
 
     public string CompanyName { get; set; }
 
     public string PaymentName { get; set; }
+
+    public string Currency { get; set; }
 }
 

@@ -39,7 +39,7 @@ namespace MobileApp
                 switch (data.action)
                 {
                     case PushAction.NewTransaction:
-                        await Shell.Current.GoToAsync($"{nameof(NewTransaction)}?{nameof(NewTransactionViewModel.Id)}={data.id}");
+                        await Shell.Current.GoToAsync($"{nameof(NewTransaction)}?{nameof(NewTransactionViewModel.ItemId)}={data.id}");
                         break;
 
                     default:

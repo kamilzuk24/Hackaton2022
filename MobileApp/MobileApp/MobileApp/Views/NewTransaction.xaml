@@ -1,21 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MobileApp.Views.NewTransaction">
+             x:Class="MobileApp.Views.NewTransaction"
+             Title="{Binding TitleBand}">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Nowy rachunek"
-                VerticalOptions="StartAndExpand"
-                HorizontalOptions="CenterAndExpand" />
-
             <StackLayout Spacing="20" Padding="15">
-                <Label Text="Text:" FontSize="Medium" />
-                <Label Text="{Binding Text}" FontSize="Small" />
-                <Label Text="Description:" FontSize="Medium" />
-                <Label Text="{Binding Description}" FontSize="Small" />
+                <Label Text="Adres e-mail" FontSize="Small" />
+                <Label Text="{Binding Email}" FontSize="Medium" FontAttributes="Bold" />
 
-                <Button Text="Wróć" Command="{Binding CancelCommand}"></Button>
-                <Button Text="Zapłać" IsVisible="{Binding NotPayed}" Command="{Binding PayCommand}"></Button>
+                <Label Text="Nazwa odbiorcy" FontSize="Small" />
+                <Label Text="{Binding Company}" FontSize="Medium" FontAttributes="Bold" />
+
+                <Label Text="Nazwa Rachunku" FontSize="Small" />
+                <Label Text="{Binding Account}" FontSize="Medium" FontAttributes="Bold" />
+
+                <Label Text="Tytuł płatności" FontSize="Small" />
+                <Label Text="{Binding TitleFor}" FontSize="Medium" FontAttributes="Bold" />
+
+                <Label Text="Kwota" FontSize="Small" />
+                <Label Text="{Binding AmmountFormatted}" FontSize="Medium" FontAttributes="Bold" />
+
+                <Label Text="Data płatności" FontSize="Small" />
+                <Label Text="{Binding PaymentDate}" FontSize="Medium" FontAttributes="Bold" />
+
+                <Label Text="Status" FontSize="Small" />
+                <Label Text="{Binding StatusOfPayment}" FontSize="Medium" FontAttributes="Bold" />
+
+                <Button Text="Zapłać" IsVisible="{Binding NotPayed}" Clicked="OnDecision"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

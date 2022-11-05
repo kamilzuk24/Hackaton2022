@@ -38,7 +38,8 @@ namespace MobileApp.ViewModels
                 Items.Clear();
                 var items = await billsService.GetPayedBills(userId);
                 foreach (var item in items)
-                {
+                { 
+                    item.Account = item.Account?.Trim()?.Replace(" ", "");
                     Items.Add(item);
                 }
             }
@@ -79,7 +80,8 @@ namespace MobileApp.ViewModels
                 return;
 
             // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+            await Shell.Current.GoToAsync($"{nameof(NewTransaction)}?{nameof(NewTransactionViewModel.ItemId)}={item.Id}");
+            //await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
         }
     }
 }

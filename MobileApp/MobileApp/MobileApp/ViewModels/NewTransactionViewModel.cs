@@ -4,10 +4,12 @@ using System;
 using MobileApp.Services;
 using Xamarin.Forms;
 using static System.Net.Mime.MediaTypeNames;
+using MobileApp.Views;
+using System.Globalization;
 
 namespace MobileApp.ViewModels
 {
-    [QueryProperty(nameof(Id), nameof(Id))]
+    [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class NewTransactionViewModel : BaseViewModel
     {
         private IBillsService billsService;
@@ -24,9 +26,38 @@ namespace MobileApp.ViewModels
 
         private string id;
         private string itemId;
-        private string text;
-        private string description;
         private bool notPayed;
+
+        private string email;
+        private string company;
+        private string account;
+        private string title;
+        private decimal amount;
+        private string amountFormatted;
+        private string currency;
+        private string statusOfPayment;
+        private string titleBand;
+        public string PaymentDate => "05.11.2022";
+
+        public string StatusOfPayment
+        {
+            get => statusOfPayment;
+            set => SetProperty(ref statusOfPayment, value);
+        }
+
+        public string AmmountFormatted
+        {
+            get => amountFormatted;
+            set => SetProperty(ref amountFormatted, value);
+        }
+
+        public string TitleBand
+        {
+            get => titleBand;
+            set => SetProperty(ref titleBand, value);
+        }
+
+        public string AccountFormatted => this.Account;
 
         public string Id
         {
@@ -34,16 +65,40 @@ namespace MobileApp.ViewModels
             set => SetProperty(ref id, value);
         }
 
-        public string Text
+        public string Email
         {
-            get => text;
-            set => SetProperty(ref text, value);
+            get => email;
+            set => SetProperty(ref email, value);
         }
 
-        public string Description
+        public string Company
         {
-            get => description;
-            set => SetProperty(ref description, value);
+            get => company;
+            set => SetProperty(ref company, value);
+        }
+
+        public string Account
+        {
+            get => account;
+            set => SetProperty(ref account, value);
+        }
+
+        public string TitleFor
+        {
+            get => title;
+            set => SetProperty(ref title, value);
+        }
+
+        public decimal Amount
+        {
+            get => amount;
+            set => SetProperty(ref amount, value);
+        }
+
+        public string Currency
+        {
+            get => currency;
+            set => SetProperty(ref currency, value);
         }
 
         public bool NotPayed
@@ -70,10 +125,18 @@ namespace MobileApp.ViewModels
             try
             {
                 var item = await this.billsService.GetBill(new Guid(itemId));
+                item.Account = item.Account?.Trim()?.Replace(" ", "");
                 Id = item.Id.ToString();
-                Text = item.Label;
                 NotPayed = !item.Payed;
-                Description = item.AccountFormatted;
+                Email = item.Email;
+                Company = item.Company;
+                Account = item.AccountFormatted;
+                TitleFor = item.Title;
+                Amount = item.Amount;
+                Currency = item.Currency;
+                StatusOfPayment = item.Payed ? "Zapłacono" : "Nie opłacone";
+                AmmountFormatted = string.Format(new CultureInfo("pl-PL"), "{0:N2} {1}", this.Amount, this.Currency);
+                TitleBand = !item.Payed ? "Zapłać rachunek" : "Sczegóły rachunku";
             }
             catch (Exception)
             {
@@ -86,23 +149,15 @@ namespace MobileApp.ViewModels
 
         private async void OnCancel()
         {
-            // This will pop the current page off the navigation stack
-            await Shell.Current.GoToAsync("..");
+            await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
         }
 
         private async void OnPay()
         {
-            Item newItem = new Item()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Text = Text,
-                Description = Description
-            };
+            await this.billsService.PayBill(new Guid(this.Id));
 
-            await this.billsService.PayBill(new Guid(this.ItemId));
-
-            // This will pop the current page off the navigation stack
-            await Shell.Current.GoToAsync("..");
+            //await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+            await Shell.Current.GoToAsync($"{nameof(ConfirmPayPage)}");
         }
     }
 }
